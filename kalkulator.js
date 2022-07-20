@@ -37,21 +37,51 @@ function Resetuj() {
   Wyswietl();
 }
 //
-function Wynik() {}
+function Wynik() {
+  let wynik = kliknieteWartosci[0];
+  kliknieteWartosci.forEach(function (element, index) {
+    const jestostatni = kliknieteWartosci.length - 1 === index;
+    if ((element === "+" || element === "-") && jestostatni) {
+      return;
+    }
+    if (element === "+") {
+      wynik = wynik + kliknieteWartosci[index + 1];
+    }
+    if (element === "-") {
+      wynik = wynik - kliknieteWartosci[index + 1];
+    }
+  });
+  WyswietlWynik(wynik);
+}
+function WyswietlWynik(wynik) {
+  Resetuj();
+  wyswietlacz.textContent = wynik;
+}
 function Wyswietl() {
   wyswietlacz.textContent = kliknieteWartosci.join(""); // join wyswietla elementy w array bez przecinka
 }
 function WstawWWyswietlaczu(event) {
   const wartosc = event.target.textContent;
+  let ostatniElement = kliknieteWartosci[kliknieteWartosci.length - 1];
   // kliknieteWartosci[kliknieteWartosci.length] = wartosc; // to samo co push
   if (wartosc === "+" || wartosc === "-") {
-    kliknieteWartosci.push(wartosc);
-  } else {
-    let ostatniElement = kliknieteWartosci[kliknieteWartosci.length - 1];
-    if (ostatniElement !== "+" && ostatniElement !== "-" && ostatniElement) {
-      kliknieteWartosci.pop();
-      kliknieteWartosci.push(parseInt(ostatniElement + wartosc, 10));
+    if (
+      ostatniElement !== "+" &&
+      ostatniElement !== "-" &&
+      ostatniElement !== undefined
+    ) {
+      kliknieteWartosci.push(wartosc);
     }
+  } else {
+    //debugger;
+    ostatniElement = ostatniElement || 0; // jezeli pierwszy element fałszywy - to jest zerem - element lub zero
+    if (ostatniElement !== "+" && ostatniElement !== "-") {
+      kliknieteWartosci.pop(); // zdejmuje ostatni element jezeli istnieje (w innym wypadku sie dodaje nowa kliknieta wartosc do poprzedniej wartosci)
+      kliknieteWartosci.push(parseInt(ostatniElement + wartosc, 10)); // parseInt - (dodaje do siebie wartosci) / parsuje miput do liczby - zmienia typ
+    } else {
+      kliknieteWartosci.push(parseInt(wartosc, 10));
+    }
+
     console.log(ostatniElement);
     // if (ostatniElement == undefined) {
     //   ostatniElement = 0;
